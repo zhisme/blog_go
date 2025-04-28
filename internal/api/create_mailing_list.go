@@ -17,13 +17,20 @@ func (s *Server) createMailingList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+  w.Header().Set("Content-Type", "application/json")
+
   err, mailingList := handlers.HandleCreate(newMailingList)
   if err != nil {
-    http.Error(w, err.Error(), http.StatusBadRequest)
-    return
+		w.WriteHeader(http.StatusBadRequest)
+    errorResponse := map[string]map[string]string{
+      "error": {
+        "message": err.Error(),
+      },
+    }
+		json.NewEncoder(w).Encode(errorResponse)
+		return
   }
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
   err = json.NewEncoder(w).Encode(mailingList)
 	if err != nil {

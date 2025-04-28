@@ -1,6 +1,7 @@
 package repositories
 
 import (
+  "fmt"
 	"encoding/csv"
 	"os"
 	"time"
@@ -18,6 +19,14 @@ func NewCsvMailingListRepository(filepath string) *CsvMailingListRepository {
 }
 
 func (r *CsvMailingListRepository) Save(mailingList *dto.MailingList) error {
+	exists, err := r.emailExists(mailingList.Email)
+  if err != nil {
+    return err
+  }
+  if exists {
+    return fmt.Errorf("email already exists: %s", mailingList.Email)
+  }
+
 	file, err := os.OpenFile(r.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
@@ -54,4 +63,33 @@ func (r *CsvMailingListRepository) Save(mailingList *dto.MailingList) error {
 	}
 
 	return writer.Error()
+}
+
+func (r *CsvMailingListRepository) emailExists(email string) (bool, error) {
+	file, err := os.Open(r.filepath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		return false, err
+	}
+
+	// Skip header: start from index 1
+	for i, record := range records {
+		if i == 0 {
+			continue
+		}
+		if record[1] == email {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }

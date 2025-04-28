@@ -21,7 +21,9 @@ func HandleCreate(newMailingList dto.MailingList) (error, dto.MailingList) {
 
 	repo := repositories.NewCsvMailingListRepository("mailing_list.csv")
 
-  repo.Save(mailingList)
+  if err := repo.Save(mailingList); err != nil {
+    return err, newMailingList
+  }
 
   return nil, *mailingList
 }

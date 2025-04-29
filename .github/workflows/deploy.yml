@@ -30,7 +30,7 @@ jobs:
 
       - name: Stop the Go app service
         run: |
-          ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo systemctl stop blog_backend.service'
+          ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo /bin/systemctl stop blog_backend.service'
 
       - name: Remove old API binary on VPS
         run: |
@@ -42,5 +42,5 @@ jobs:
 
       - name: Restart the Go app service
         run: |
-          ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo systemctl start blog_backend.service'
+          ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo /bin/systemctl start blog_backend.service'
 

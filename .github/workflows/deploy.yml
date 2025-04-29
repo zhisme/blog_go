@@ -1,0 +1,38 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.23'
+
+    - name: Build Go app
+      run: |
+        go mod tidy
+        go build -o api
+
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy Go app to VPS
+      run: |
+        scp -o StrictHostKeyChecking=no api zh@165.22.80.158:/var/www/blog_backend
+
+    - name: Restart Go app on VPS
+      run: |
+        ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo systemctl restart blog_backend.service'
+

@@ -1,9 +1,9 @@
 package repositories
 
 import (
-  "fmt"
 	"encoding/csv"
 	"os"
+  "log"
 	"time"
 	"backend-go/internal/dto"
 )
@@ -24,7 +24,8 @@ func (r *CsvMailingListRepository) Save(mailingList *dto.MailingList) error {
     return err
   }
   if exists {
-    return fmt.Errorf("email already exists: %s", mailingList.Email)
+    log.Printf("Email already subscribed: %s", mailingList.Email)
+    return nil
   }
 
 	file, err := os.OpenFile(r.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)

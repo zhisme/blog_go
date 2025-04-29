@@ -21,7 +21,7 @@ jobs:
       - name: Build Go app
         run: |
           go mod tidy
-          go build -o api
+          go build -o api ./cmd/api
 
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.5.3

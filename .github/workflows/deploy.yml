@@ -34,5 +34,5 @@ jobs:
 
     - name: Restart Go app on VPS
       run: |
-        ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo systemctl restart blog_backend.service'
+        ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo /bin/systemctl restart blog_backend.service'
 

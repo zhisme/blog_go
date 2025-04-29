@@ -21,7 +21,6 @@ func (m *MailingListValidator) Validate(mailingList *dto.MailingList) error {
     return err
   }
 
-
   return nil
 }
 

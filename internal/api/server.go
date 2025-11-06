@@ -10,7 +10,7 @@ import (
 )
 
 type Server struct {
-	router   *chi.Mux
+	router *chi.Mux
 }
 
 func (s *Server) ListenAndServe(addr string) error {
@@ -27,8 +27,8 @@ func NewApiServer() *Server {
 	}
 
 	srv.router.Use(middleware.Logger)
-  srv.router.Use(cors.Handler(cors.Options{
-    AllowedOrigins:   []string{"http://localhost:1313", "https://zhisme.com/"},
+	srv.router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:1313", "https://zhisme.com/"},
 		AllowedMethods:   []string{"POST", "DELETE"},
 		AllowCredentials: true,
 		MaxAge:           300,

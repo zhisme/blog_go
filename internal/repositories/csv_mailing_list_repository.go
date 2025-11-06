@@ -1,11 +1,11 @@
 package repositories
 
 import (
-	"encoding/csv"
-	"os"
-  "log"
-	"time"
 	"backend-go/internal/dto"
+	"encoding/csv"
+	"log"
+	"os"
+	"time"
 )
 
 type CsvMailingListRepository struct {
@@ -20,19 +20,23 @@ func NewCsvMailingListRepository(filepath string) *CsvMailingListRepository {
 
 func (r *CsvMailingListRepository) Save(mailingList *dto.MailingList) error {
 	exists, err := r.emailExists(mailingList.Email)
-  if err != nil {
-    return err
-  }
-  if exists {
-    log.Printf("Email already subscribed: %s", mailingList.Email)
-    return nil
-  }
+	if err != nil {
+		return err
+	}
+	if exists {
+		log.Printf("Email already subscribed: %s", mailingList.Email)
+		return nil
+	}
 
 	file, err := os.OpenFile(r.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Error closing file: %v", err)
+		}
+	}()
 
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
@@ -74,7 +78,11 @@ func (r *CsvMailingListRepository) emailExists(email string) (bool, error) {
 		}
 		return false, err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Error closing file: %v", err)
+		}
+	}()
 
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()

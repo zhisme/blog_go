@@ -6,31 +6,20 @@ linters:
     - ineffassign   # Detect ineffectual assignments
     - staticcheck   # Go static analysis
     - unused        # Check for unused code
-    - gofmt         # Check formatting
-    - goimports     # Check imports formatting
     - revive        # General purpose linter
     - misspell      # Check for misspelled words
     - gocritic      # Comprehensive linter
     - gosec         # Security issues
-    - typecheck     # Type checking
 
 linters-settings:
-  gofmt:
-    simplify: true
-
   govet:
     enable-all: true
 
   revive:
     confidence: 0.8
 
-  gosec:
-    excludes:
-      - G104  # Audit errors not checked (covered by errcheck)
-
 run:
   timeout: 5m
-  go: '1.23'
 
 issues:
   exclude-use-default: false

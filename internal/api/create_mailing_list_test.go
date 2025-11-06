@@ -187,12 +187,12 @@ func TestCreateMailingList(t *testing.T) {
 
 	t.Run("Content-Type header is set for all responses", func(t *testing.T) {
 		tests := []struct {
-			name string
 			body io.Reader
+			name string
 		}{
-			{"valid request", bytes.NewBufferString(`{"email":"test@example.com","username":"user"}`)},
-			{"invalid json", bytes.NewBufferString("invalid")},
-			{"empty body", bytes.NewBufferString("")},
+			{bytes.NewBufferString(`{"email":"test@example.com","username":"user"}`), "valid request"},
+			{bytes.NewBufferString("invalid"), "invalid json"},
+			{bytes.NewBufferString(""), "empty body"},
 		}
 
 		for _, tt := range tests {

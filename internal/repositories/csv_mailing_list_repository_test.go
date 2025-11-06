@@ -41,7 +41,7 @@ func TestSave(t *testing.T) {
 		}
 
 		// Verify file exists
-		if _, err := os.Stat(testFile); os.IsNotExist(err) {
+		if _, statErr := os.Stat(testFile); os.IsNotExist(statErr) {
 			t.Error("Expected file to be created, but it doesn't exist")
 		}
 
@@ -382,8 +382,8 @@ func TestEmailExists(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to create empty file: %v", err)
 		}
-		if err := file.Close(); err != nil {
-			t.Fatalf("Failed to close file: %v", err)
+		if closeErr := file.Close(); closeErr != nil {
+			t.Fatalf("Failed to close file: %v", closeErr)
 		}
 
 		exists, err := repo.emailExists("test@example.com")

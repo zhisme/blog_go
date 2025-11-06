@@ -1,4 +1,4 @@
-package api
+package api_test
 
 import (
 	"bytes"
@@ -9,6 +9,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"backend-go/internal/api"
 )
 
 func TestCreateMailingList(t *testing.T) {
@@ -16,7 +18,7 @@ func TestCreateMailingList(t *testing.T) {
 	testCSVFile := "test_create_mailing_list.csv"
 	defer func() { _ = os.Remove(testCSVFile) }()
 
-	srv := NewApiServer()
+	srv := api.NewApiServer()
 
 	t.Run("Valid request returns 201 Created", func(t *testing.T) {
 		payload := map[string]string{
@@ -28,7 +30,7 @@ func TestCreateMailingList(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/mailing_list", bytes.NewBuffer(body))
 		w := httptest.NewRecorder()
 
-		srv.createMailingList(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusCreated {
 			t.Errorf("Expected status %d, got %d. Body: %s", http.StatusCreated, w.Code, w.Body.String())
@@ -53,7 +55,7 @@ func TestCreateMailingList(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/mailing_list", bytes.NewBufferString(""))
 		w := httptest.NewRecorder()
 
-		srv.createMailingList(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)
@@ -73,7 +75,7 @@ func TestCreateMailingList(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/mailing_list", bytes.NewBufferString("{invalid json}"))
 		w := httptest.NewRecorder()
 
-		srv.createMailingList(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)
@@ -98,7 +100,7 @@ func TestCreateMailingList(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/mailing_list", bytes.NewBuffer(body))
 		w := httptest.NewRecorder()
 
-		srv.createMailingList(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)
@@ -124,7 +126,7 @@ func TestCreateMailingList(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/mailing_list", bytes.NewBuffer(body))
 		w := httptest.NewRecorder()
 
-		srv.createMailingList(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)
@@ -149,7 +151,7 @@ func TestCreateMailingList(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/mailing_list", bytes.NewBuffer(body))
 		w := httptest.NewRecorder()
 
-		srv.createMailingList(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)
@@ -169,7 +171,7 @@ func TestCreateMailingList(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPost, "/mailing_list", http.NoBody)
 		w := httptest.NewRecorder()
 
-		srv.createMailingList(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)
@@ -200,7 +202,7 @@ func TestCreateMailingList(t *testing.T) {
 				req := httptest.NewRequest(http.MethodPost, "/mailing_list", tt.body)
 				w := httptest.NewRecorder()
 
-				srv.createMailingList(w, req)
+				srv.ServeHTTP(w, req)
 
 				contentType := w.Header().Get("Content-Type")
 				if contentType != "application/json" {

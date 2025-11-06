@@ -1,4 +1,4 @@
-package api
+package api_test
 
 import (
 	"bytes"
@@ -7,22 +7,22 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"backend-go/internal/api"
 )
 
 func TestNewApiServer(t *testing.T) {
-	srv := NewApiServer()
+	srv := api.NewApiServer()
 
 	if srv == nil {
 		t.Fatal("NewApiServer() returned nil")
 	}
 
-	if srv.router == nil {
-		t.Error("Server router is nil")
-	}
+	// Note: Cannot test unexported fields in black-box testing
 }
 
 func TestServerRouting(t *testing.T) {
-	srv := NewApiServer()
+	srv := api.NewApiServer()
 
 	tests := []struct {
 		name           string
@@ -55,7 +55,7 @@ func TestServerRouting(t *testing.T) {
 			req := httptest.NewRequest(tt.method, tt.path, nil)
 			w := httptest.NewRecorder()
 
-			srv.router.ServeHTTP(w, req)
+			srv.ServeHTTP(w, req)
 
 			if w.Code != tt.expectedStatus {
 				t.Errorf("Expected status %d, got %d", tt.expectedStatus, w.Code)
@@ -65,7 +65,7 @@ func TestServerRouting(t *testing.T) {
 }
 
 func TestServerCORS(t *testing.T) {
-	srv := NewApiServer()
+	srv := api.NewApiServer()
 
 	tests := []struct {
 		name        string
@@ -95,7 +95,7 @@ func TestServerCORS(t *testing.T) {
 			req.Header.Set("Content-Type", "application/json")
 
 			w := httptest.NewRecorder()
-			srv.router.ServeHTTP(w, req)
+			srv.ServeHTTP(w, req)
 
 			allowOrigin := w.Header().Get("Access-Control-Allow-Origin")
 			if tt.shouldAllow && allowOrigin == "" {
@@ -110,7 +110,7 @@ func TestServerMailingListEndpoint(t *testing.T) {
 	tmpFile := "test_mailing_list.csv"
 	defer func() { _ = os.Remove(tmpFile) }()
 
-	srv := NewApiServer()
+	srv := api.NewApiServer()
 
 	t.Run("Valid request creates mailing list entry", func(t *testing.T) {
 		payload := map[string]string{
@@ -123,7 +123,7 @@ func TestServerMailingListEndpoint(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		w := httptest.NewRecorder()
-		srv.router.ServeHTTP(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusCreated {
 			t.Errorf("Expected status %d, got %d. Body: %s", http.StatusCreated, w.Code, w.Body.String())
@@ -147,7 +147,7 @@ func TestServerMailingListEndpoint(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		w := httptest.NewRecorder()
-		srv.router.ServeHTTP(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)
@@ -159,7 +159,7 @@ func TestServerMailingListEndpoint(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		w := httptest.NewRecorder()
-		srv.router.ServeHTTP(w, req)
+		srv.ServeHTTP(w, req)
 
 		if w.Code != http.StatusBadRequest {
 			t.Errorf("Expected status %d, got %d", http.StatusBadRequest, w.Code)

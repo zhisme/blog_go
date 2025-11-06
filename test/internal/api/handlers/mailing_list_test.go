@@ -1,6 +1,7 @@
-package handlers
+package handlers_test
 
 import (
+	"backend-go/internal/api/handlers"
 	"backend-go/internal/dto"
 	"os"
 	"strings"
@@ -22,7 +23,7 @@ func TestHandleCreate(t *testing.T) {
 			Email:    "test@example.com",
 		}
 
-		result, err := HandleCreate(input)
+		result, err := handlers.HandleCreate(input)
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err)
 		}
@@ -47,7 +48,7 @@ func TestHandleCreate(t *testing.T) {
 			Email:    "notanemail",
 		}
 
-		_, err := HandleCreate(input)
+		_, err := handlers.HandleCreate(input)
 		if err == nil {
 			t.Fatal("Expected validation error, got nil")
 		}
@@ -63,7 +64,7 @@ func TestHandleCreate(t *testing.T) {
 			Email:    "",
 		}
 
-		_, err := HandleCreate(input)
+		_, err := handlers.HandleCreate(input)
 		if err == nil {
 			t.Fatal("Expected validation error, got nil")
 		}
@@ -79,7 +80,7 @@ func TestHandleCreate(t *testing.T) {
 			Email:    "test@example.com",
 		}
 
-		_, err := HandleCreate(input)
+		_, err := handlers.HandleCreate(input)
 		if err == nil {
 			t.Fatal("Expected validation error, got nil")
 		}
@@ -96,7 +97,7 @@ func TestHandleCreate(t *testing.T) {
 		}
 
 		// Create first entry
-		_, err := HandleCreate(input)
+		_, err := handlers.HandleCreate(input)
 		if err != nil {
 			t.Fatalf("Expected no error on first create, got %v", err)
 		}
@@ -107,7 +108,7 @@ func TestHandleCreate(t *testing.T) {
 			Email:    "duplicate@example.com",
 		}
 
-		result, err := HandleCreate(input2)
+		result, err := handlers.HandleCreate(input2)
 		// The repository logs but doesn't return an error for duplicates
 		if err != nil {
 			t.Fatalf("Expected no error on duplicate (should be handled gracefully), got %v", err)
@@ -126,7 +127,7 @@ func TestHandleCreate(t *testing.T) {
 		}
 
 		before := time.Now()
-		result, err := HandleCreate(input)
+		result, err := handlers.HandleCreate(input)
 		after := time.Now()
 
 		if err != nil {
@@ -154,7 +155,7 @@ func TestHandleCreate(t *testing.T) {
 					Email:    email,
 				}
 
-				result, err := HandleCreate(input)
+				result, err := handlers.HandleCreate(input)
 				if err != nil {
 					t.Errorf("Expected valid email %s to be accepted, got error: %v", email, err)
 				}
@@ -183,7 +184,7 @@ func TestHandleCreate(t *testing.T) {
 					Email:    email,
 				}
 
-				_, err := HandleCreate(input)
+				_, err := handlers.HandleCreate(input)
 				if err == nil {
 					t.Errorf("Expected invalid email %s to be rejected, but it was accepted", email)
 				}

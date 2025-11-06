@@ -1,7 +1,8 @@
-package repositories
+package repositories_test
 
 import (
 	"backend-go/internal/dto"
+	"backend-go/internal/repositories"
 	"encoding/csv"
 	"os"
 	"testing"
@@ -9,22 +10,20 @@ import (
 )
 
 func TestNewCsvMailingListRepository(t *testing.T) {
-	repo := NewCsvMailingListRepository("test.csv")
+	repo := repositories.NewCsvMailingListRepository("test.csv")
 
 	if repo == nil {
 		t.Fatal("NewCsvMailingListRepository() returned nil")
 	}
 
-	if repo.filepath != "test.csv" {
-		t.Errorf("Expected filepath 'test.csv', got '%s'", repo.filepath)
-	}
+	// Note: Cannot test unexported fields in black-box testing
 }
 
 func TestSave(t *testing.T) {
 	testFile := "test_save.csv"
 	defer func() { _ = os.Remove(testFile) }()
 
-	repo := NewCsvMailingListRepository(testFile)
+	repo := repositories.NewCsvMailingListRepository(testFile)
 
 	t.Run("Save creates file with headers if it doesn't exist", func(t *testing.T) {
 		_ = os.Remove(testFile) // Ensure clean state
@@ -277,121 +276,5 @@ func TestSave(t *testing.T) {
 	})
 }
 
-func TestEmailExists(t *testing.T) {
-	testFile := "test_email_exists.csv"
-	defer func() { _ = os.Remove(testFile) }()
-
-	repo := NewCsvMailingListRepository(testFile)
-
-	t.Run("Returns false when file doesn't exist", func(t *testing.T) {
-		_ = os.Remove(testFile)
-
-		exists, err := repo.emailExists("test@example.com")
-		if err != nil {
-			t.Errorf("Expected no error when file doesn't exist, got %v", err)
-		}
-		if exists {
-			t.Error("Expected email to not exist when file doesn't exist")
-		}
-	})
-
-	t.Run("Returns false for non-existent email", func(t *testing.T) {
-		_ = os.Remove(testFile)
-
-		// Create file with one entry
-		ml := &dto.MailingList{
-			Username:  "user1",
-			Email:     "existing@example.com",
-			CreatedAt: time.Now(),
-		}
-		if err := repo.Save(ml); err != nil {
-			t.Fatalf("Failed to save test data: %v", err)
-		}
-
-		exists, err := repo.emailExists("nonexistent@example.com")
-		if err != nil {
-			t.Errorf("Expected no error, got %v", err)
-		}
-		if exists {
-			t.Error("Expected email to not exist")
-		}
-	})
-
-	t.Run("Returns true for existing email", func(t *testing.T) {
-		_ = os.Remove(testFile)
-
-		// Create file with one entry
-		ml := &dto.MailingList{
-			Username:  "user1",
-			Email:     "existing@example.com",
-			CreatedAt: time.Now(),
-		}
-		if err := repo.Save(ml); err != nil {
-			t.Fatalf("Failed to save test data: %v", err)
-		}
-
-		exists, err := repo.emailExists("existing@example.com")
-		if err != nil {
-			t.Errorf("Expected no error, got %v", err)
-		}
-		if !exists {
-			t.Error("Expected email to exist")
-		}
-	})
-
-	t.Run("Correctly identifies email among multiple entries", func(t *testing.T) {
-		_ = os.Remove(testFile)
-
-		// Create file with multiple entries
-		emails := []string{"user1@example.com", "user2@example.com", "user3@example.com"}
-		for i, email := range emails {
-			ml := &dto.MailingList{
-				Username:  "user" + string(rune(i)),
-				Email:     email,
-				CreatedAt: time.Now(),
-			}
-			if err := repo.Save(ml); err != nil {
-				t.Fatalf("Failed to save test data: %v", err)
-			}
-		}
-
-		// Check that middle email exists
-		exists, err := repo.emailExists("user2@example.com")
-		if err != nil {
-			t.Errorf("Expected no error, got %v", err)
-		}
-		if !exists {
-			t.Error("Expected email to exist")
-		}
-
-		// Check that non-existent email doesn't exist
-		exists, err = repo.emailExists("user4@example.com")
-		if err != nil {
-			t.Errorf("Expected no error, got %v", err)
-		}
-		if exists {
-			t.Error("Expected email to not exist")
-		}
-	})
-
-	t.Run("Handles empty CSV file", func(t *testing.T) {
-		_ = os.Remove(testFile)
-
-		// Create empty file
-		file, err := os.Create(testFile)
-		if err != nil {
-			t.Fatalf("Failed to create empty file: %v", err)
-		}
-		if closeErr := file.Close(); closeErr != nil {
-			t.Fatalf("Failed to close file: %v", closeErr)
-		}
-
-		exists, err := repo.emailExists("test@example.com")
-		if err != nil {
-			t.Errorf("Expected no error for empty file, got %v", err)
-		}
-		if exists {
-			t.Error("Expected email to not exist in empty file")
-		}
-	})
-}
+// Note: TestEmailExists removed - it tested unexported emailExists() function
+// Duplicate detection is now tested through the public Save() API in TestSave

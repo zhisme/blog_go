@@ -25,10 +25,10 @@ func TestServerRouting(t *testing.T) {
 	srv := NewApiServer()
 
 	tests := []struct {
-		expectedStatus int
 		name           string
 		method         string
 		path           string
+		expectedStatus int
 	}{
 		{
 			name:           "POST to /mailing_list should be handled",
@@ -68,10 +68,10 @@ func TestServerCORS(t *testing.T) {
 	srv := NewApiServer()
 
 	tests := []struct {
-		shouldAllow bool
 		name        string
 		origin      string
 		method      string
+		shouldAllow bool
 	}{
 		{
 			name:        "Should allow localhost:1313",

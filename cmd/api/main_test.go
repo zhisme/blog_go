@@ -29,7 +29,11 @@ func TestMainServerIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to make request to server: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			t.Logf("Failed to close response body: %v", closeErr)
+		}
+	}()
 
 	// Should return method not allowed (GET on POST endpoint) but server is running
 	if resp.StatusCode != http.StatusMethodNotAllowed {

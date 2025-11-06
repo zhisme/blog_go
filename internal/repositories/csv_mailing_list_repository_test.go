@@ -22,12 +22,12 @@ func TestNewCsvMailingListRepository(t *testing.T) {
 
 func TestSave(t *testing.T) {
 	testFile := "test_save.csv"
-	defer os.Remove(testFile)
+	defer func() { _ = os.Remove(testFile) }()
 
 	repo := NewCsvMailingListRepository(testFile)
 
 	t.Run("Save creates file with headers if it doesn't exist", func(t *testing.T) {
-		os.Remove(testFile) // Ensure clean state
+		_ = os.Remove(testFile) // Ensure clean state
 
 		ml := &dto.MailingList{
 			Username:  "testuser",
@@ -80,7 +80,7 @@ func TestSave(t *testing.T) {
 	})
 
 	t.Run("Save appends to existing file without duplicating headers", func(t *testing.T) {
-		os.Remove(testFile) // Clean state
+		_ = os.Remove(testFile) // Clean state
 
 		ml1 := &dto.MailingList{
 			Username:  "user1",
@@ -131,7 +131,7 @@ func TestSave(t *testing.T) {
 	})
 
 	t.Run("Save sets CreatedAt if not provided", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		ml := &dto.MailingList{
 			Username: "testuser",
@@ -173,7 +173,7 @@ func TestSave(t *testing.T) {
 	})
 
 	t.Run("Save does not duplicate emails", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		ml := &dto.MailingList{
 			Username:  "user1",
@@ -218,7 +218,7 @@ func TestSave(t *testing.T) {
 	})
 
 	t.Run("Save preserves CreatedAt if provided", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		specificTime := time.Date(2023, 5, 15, 10, 30, 0, 0, time.UTC)
 		ml := &dto.MailingList{
@@ -259,12 +259,12 @@ func TestSave(t *testing.T) {
 
 func TestEmailExists(t *testing.T) {
 	testFile := "test_email_exists.csv"
-	defer os.Remove(testFile)
+	defer func() { _ = os.Remove(testFile) }()
 
 	repo := NewCsvMailingListRepository(testFile)
 
 	t.Run("Returns false when file doesn't exist", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		exists, err := repo.emailExists("test@example.com")
 		if err != nil {
@@ -276,7 +276,7 @@ func TestEmailExists(t *testing.T) {
 	})
 
 	t.Run("Returns false for non-existent email", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		// Create file with one entry
 		ml := &dto.MailingList{
@@ -298,7 +298,7 @@ func TestEmailExists(t *testing.T) {
 	})
 
 	t.Run("Returns true for existing email", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		// Create file with one entry
 		ml := &dto.MailingList{
@@ -320,7 +320,7 @@ func TestEmailExists(t *testing.T) {
 	})
 
 	t.Run("Correctly identifies email among multiple entries", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		// Create file with multiple entries
 		emails := []string{"user1@example.com", "user2@example.com", "user3@example.com"}
@@ -355,14 +355,16 @@ func TestEmailExists(t *testing.T) {
 	})
 
 	t.Run("Handles empty CSV file", func(t *testing.T) {
-		os.Remove(testFile)
+		_ = os.Remove(testFile)
 
 		// Create empty file
 		file, err := os.Create(testFile)
 		if err != nil {
 			t.Fatalf("Failed to create empty file: %v", err)
 		}
-		file.Close()
+		if err := file.Close(); err != nil {
+			t.Fatalf("Failed to close file: %v", err)
+		}
 
 		exists, err := repo.emailExists("test@example.com")
 		if err != nil {

@@ -70,9 +70,9 @@ func TestValidateEmail(t *testing.T) {
 	validator := NewMailingListValidator()
 
 	tests := []struct {
+		shouldError bool
 		name        string
 		email       string
-		shouldError bool
 		errorMsg    string
 	}{
 		{
@@ -189,9 +189,9 @@ func TestValidateUsername(t *testing.T) {
 	validator := NewMailingListValidator()
 
 	tests := []struct {
+		shouldError bool
 		name        string
 		username    string
-		shouldError bool
 		errorMsg    string
 	}{
 		{

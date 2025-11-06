@@ -13,8 +13,8 @@ func TestHandleCreate(t *testing.T) {
 	testCSVFile := "test_handlers_mailing_list.csv"
 
 	// Clean up before and after tests
-	os.Remove(testCSVFile)
-	defer os.Remove(testCSVFile)
+	_ = os.Remove(testCSVFile)
+	defer func() { _ = os.Remove(testCSVFile) }()
 
 	t.Run("Valid mailing list entry is created successfully", func(t *testing.T) {
 		input := dto.MailingList{

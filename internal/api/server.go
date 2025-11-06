@@ -3,6 +3,7 @@ package api
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -10,12 +11,21 @@ import (
 )
 
 type Server struct {
-	router   *chi.Mux
+	router *chi.Mux
 }
 
 func (s *Server) ListenAndServe(addr string) error {
 	log.Default().Printf("api server started on %s\n", addr)
-	if err := http.ListenAndServe(addr, s.router); err != nil {
+
+	server := &http.Server{
+		Addr:         addr,
+		Handler:      s.router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	if err := server.ListenAndServe(); err != nil {
 		return err
 	}
 	return nil
@@ -27,8 +37,8 @@ func NewApiServer() *Server {
 	}
 
 	srv.router.Use(middleware.Logger)
-  srv.router.Use(cors.Handler(cors.Options{
-    AllowedOrigins:   []string{"http://localhost:1313", "https://zhisme.com/"},
+	srv.router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:1313", "https://zhisme.com/"},
 		AllowedMethods:   []string{"POST", "DELETE"},
 		AllowCredentials: true,
 		MaxAge:           300,

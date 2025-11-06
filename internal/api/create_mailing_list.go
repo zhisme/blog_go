@@ -31,8 +31,8 @@ func (s *Server) createMailingList(w http.ResponseWriter, r *http.Request) {
 				"message": msg,
 			},
 		}
-		if err := json.NewEncoder(w).Encode(errorResponse); err != nil {
-			log.Default().Print(err)
+		if encodeErr := json.NewEncoder(w).Encode(errorResponse); encodeErr != nil {
+			log.Default().Print(encodeErr)
 		}
 		return
 	}
@@ -47,14 +47,14 @@ func (s *Server) createMailingList(w http.ResponseWriter, r *http.Request) {
 				"message": err.Error(),
 			},
 		}
-		if err := json.NewEncoder(w).Encode(errorResponse); err != nil {
-			log.Default().Print(err)
+		if encodeErr := json.NewEncoder(w).Encode(errorResponse); encodeErr != nil {
+			log.Default().Print(encodeErr)
 		}
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(mailingList); err != nil {
-		log.Default().Print(err)
+	if encodeErr := json.NewEncoder(w).Encode(mailingList); encodeErr != nil {
+		log.Default().Print(encodeErr)
 	}
 }

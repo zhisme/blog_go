@@ -108,7 +108,7 @@ func TestServerCORS(t *testing.T) {
 func TestServerMailingListEndpoint(t *testing.T) {
 	// Create a temporary CSV file for testing
 	tmpFile := "test_mailing_list.csv"
-	defer os.Remove(tmpFile)
+	defer func() { _ = os.Remove(tmpFile) }()
 
 	srv := NewApiServer()
 

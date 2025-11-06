@@ -50,7 +50,11 @@ func TestSave(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to open test file: %v", err)
 		}
-		defer file.Close()
+		defer func() {
+			if closeErr := file.Close(); closeErr != nil {
+				t.Errorf("Failed to close file: %v", closeErr)
+			}
+		}()
 
 		reader := csv.NewReader(file)
 		records, err := reader.ReadAll()
@@ -109,7 +113,11 @@ func TestSave(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to open test file: %v", err)
 		}
-		defer file.Close()
+		defer func() {
+			if closeErr := file.Close(); closeErr != nil {
+				t.Errorf("Failed to close file: %v", closeErr)
+			}
+		}()
 
 		reader := csv.NewReader(file)
 		records, err := reader.ReadAll()
@@ -152,7 +160,11 @@ func TestSave(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to open test file: %v", err)
 		}
-		defer file.Close()
+		defer func() {
+			if closeErr := file.Close(); closeErr != nil {
+				t.Errorf("Failed to close file: %v", closeErr)
+			}
+		}()
 
 		reader := csv.NewReader(file)
 		records, err := reader.ReadAll()
@@ -204,7 +216,11 @@ func TestSave(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to open test file: %v", err)
 		}
-		defer file.Close()
+		defer func() {
+			if closeErr := file.Close(); closeErr != nil {
+				t.Errorf("Failed to close file: %v", closeErr)
+			}
+		}()
 
 		reader := csv.NewReader(file)
 		records, err := reader.ReadAll()
@@ -237,7 +253,11 @@ func TestSave(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to open test file: %v", err)
 		}
-		defer file.Close()
+		defer func() {
+			if closeErr := file.Close(); closeErr != nil {
+				t.Errorf("Failed to close file: %v", closeErr)
+			}
+		}()
 
 		reader := csv.NewReader(file)
 		records, err := reader.ReadAll()

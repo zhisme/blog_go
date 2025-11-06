@@ -14,7 +14,7 @@ import (
 func TestCreateMailingList(t *testing.T) {
 	// Use a test CSV file
 	testCSVFile := "test_create_mailing_list.csv"
-	defer os.Remove(testCSVFile)
+	defer func() { _ = os.Remove(testCSVFile) }()
 
 	srv := NewApiServer()
 

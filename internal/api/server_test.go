@@ -68,10 +68,10 @@ func TestServerCORS(t *testing.T) {
 	srv := NewApiServer()
 
 	tests := []struct {
-		name           string
-		origin         string
-		method         string
-		shouldAllow    bool
+		name        string
+		origin      string
+		method      string
+		shouldAllow bool
 	}{
 		{
 			name:        "Should allow localhost:1313",

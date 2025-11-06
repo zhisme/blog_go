@@ -28,13 +28,13 @@ func (r *CsvMailingListRepository) Save(mailingList *dto.MailingList) error {
 		return nil
 	}
 
-	file, err := os.OpenFile(r.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(r.filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		return err
 	}
 	defer func() {
-		if err := file.Close(); err != nil {
-			log.Printf("Error closing file: %v", err)
+		if closeErr := file.Close(); closeErr != nil {
+			log.Printf("Error closing file: %v", closeErr)
 		}
 	}()
 
@@ -79,8 +79,8 @@ func (r *CsvMailingListRepository) emailExists(email string) (bool, error) {
 		return false, err
 	}
 	defer func() {
-		if err := file.Close(); err != nil {
-			log.Printf("Error closing file: %v", err)
+		if closeErr := file.Close(); closeErr != nil {
+			log.Printf("Error closing file: %v", closeErr)
 		}
 	}()
 

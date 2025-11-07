@@ -28,8 +28,8 @@ func main() {
 		log.Fatalf("Failed to open CSV file: %v", err)
 	}
 	defer func() {
-		if err := csvFile.Close(); err != nil {
-			log.Printf("Error closing CSV file: %v", err)
+		if closeErr := csvFile.Close(); closeErr != nil {
+			log.Printf("Error closing CSV file: %v", closeErr)
 		}
 	}()
 
@@ -37,7 +37,8 @@ func main() {
 	reader := csv.NewReader(csvFile)
 	records, err := reader.ReadAll()
 	if err != nil {
-		log.Fatalf("Failed to read CSV file: %v", err)
+		log.Printf("Failed to read CSV file: %v", err)
+		return
 	}
 
 	if len(records) == 0 {
@@ -48,11 +49,12 @@ func main() {
 	// Initialize SQLite repository
 	repo, err := repositories.NewSqliteMailingListRepository(*dbPath)
 	if err != nil {
-		log.Fatalf("Failed to initialize SQLite repository: %v", err)
+		log.Printf("Failed to initialize SQLite repository: %v", err)
+		return
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			log.Printf("Error closing database: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			log.Printf("Error closing database: %v", closeErr)
 		}
 	}()
 
@@ -66,7 +68,8 @@ func main() {
 		if i == 0 {
 			// Validate header
 			if len(record) < 3 {
-				log.Fatalf("Invalid CSV header: expected at least 3 columns, got %d", len(record))
+				log.Printf("Invalid CSV header: expected at least 3 columns, got %d", len(record))
+				return
 			}
 			log.Printf("CSV Header: %v", record)
 			continue
@@ -83,9 +86,9 @@ func main() {
 		createdAtStr := record[2]
 
 		// Parse timestamp
-		createdAt, err := time.Parse(time.RFC3339, createdAtStr)
-		if err != nil {
-			log.Printf("Warning: Failed to parse timestamp '%s' at line %d, using current time: %v", createdAtStr, i+1, err)
+		createdAt, parseErr := time.Parse(time.RFC3339, createdAtStr)
+		if parseErr != nil {
+			log.Printf("Warning: Failed to parse timestamp '%s' at line %d, using current time: %v", createdAtStr, i+1, parseErr)
 			createdAt = time.Now()
 		}
 

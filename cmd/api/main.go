@@ -17,14 +17,15 @@ func main() {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			log.Printf("Error closing database: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			log.Printf("Error closing database: %v", closeErr)
 		}
 	}()
 
 	// Create and start server
 	srv := api.NewApiServer(repo)
-	if err := srv.ListenAndServe("localhost:3000"); err != nil {
-		log.Fatalf("Server error: %v", err)
+	err = srv.ListenAndServe("localhost:3000")
+	if err != nil {
+		log.Printf("Server error: %v", err)
 	}
 }

@@ -1,38 +1,35 @@
 # Blog Go - Backend API
 
-A lightweight Go backend API service for managing mailing list subscriptions.
-
-## What's New
-
-### Latest Updates (November 2025)
-
-**Comprehensive Test Suite Added** ✅
-- Complete black-box testing implementation
-- Test coverage: 77-100% across all modules
-- All tests moved to separate `test/` directory following Go best practices
-
-**Bug Fixes** 🐛
-- Fixed validator bug where `validateUsername` was incorrectly called with email parameter
-
-**Code Quality Improvements** 🔧
-- Resolved all linting issues (errcheck, fieldalignment, shadow declarations)
-- Added `ServeHTTP` method to Server for better testability
-- Optimized struct field alignment for memory efficiency
+A lightweight, well-tested Go backend API service for managing mailing list subscriptions with comprehensive test coverage and automated quality checks.
 
 ## Overview
 
-This project provides a REST API for handling mailing list operations, built with Go and designed to work with a blog platform hosted at zhisme.com.
+This project provides a REST API for handling mailing list operations, built with Go and designed to work with a blog platform hosted at zhisme.com. The codebase follows clean architecture principles with 77-100% test coverage and strict linting standards.
+
+## Features
+
+- **RESTful API**: Simple mailing list subscription management
+- **CSV Storage**: Lightweight data persistence with duplicate detection
+- **Input Validation**: Email format and username validation
+- **CORS Support**: Configured for specific origins
+- **High Test Coverage**: 77-100% across all modules
+- **CI/CD Integration**: Automated testing and linting on pull requests
 
 ## Tech Stack
 
 - **Go**: 1.23.6
 - **Chi Router**: v5.2.2 - Lightweight HTTP router
 - **CORS**: v1.2.1 - Cross-Origin Resource Sharing support
+- **Testing**: Standard library testing with black-box approach
+- **CI/CD**: GitHub Actions with golangci-lint
 
 ## Project Structure
 
 ```
 blog_go/
+├── .github/
+│   └── workflows/
+│       └── pr-validation.yml # CI/CD pipeline (tests, linting, formatting)
 ├── cmd/
 │   └── api/
 │       └── main.go           # Application entry point
@@ -57,6 +54,7 @@ blog_go/
 │   ├── internal/api/handlers/
 │   ├── internal/repositories/
 │   └── internal/validators/
+├── .golangci.yml            # Linter configuration
 ├── go.mod
 └── go.sum
 ```
@@ -110,6 +108,23 @@ The project follows a clean architecture pattern with:
 - **Repositories**: Data persistence layer
 - **Validators**: Input validation logic
 - **Interfaces**: Dependency injection contracts
+
+### Code Quality
+
+The codebase maintains high quality standards through:
+- **Automated Linting**: golangci-lint checks on every PR
+- **Code Formatting**: Enforced gofmt formatting
+- **Error Handling**: Explicit error checking (no ignored errors)
+- **Memory Optimization**: Optimized struct field alignment
+- **No Shadowing**: Clean variable scoping
+
+### CI/CD Pipeline
+
+Pull requests are automatically validated with:
+- Go formatting checks (`gofmt`)
+- Comprehensive linting (`golangci-lint`)
+- Full test suite execution
+- Build verification
 
 ## Testing
 

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"backend-go/internal/interfaces"
 	"log"
 	"net/http"
 	"time"
@@ -11,7 +12,8 @@ import (
 )
 
 type Server struct {
-	router *chi.Mux
+	router                *chi.Mux
+	mailingListRepository interfaces.MailingListRepository
 }
 
 // ServeHTTP implements http.Handler interface
@@ -36,9 +38,10 @@ func (s *Server) ListenAndServe(addr string) error {
 	return nil
 }
 
-func NewApiServer() *Server {
+func NewApiServer(mailingListRepo interfaces.MailingListRepository) *Server {
 	srv := &Server{
-		router: chi.NewRouter(),
+		router:                chi.NewRouter(),
+		mailingListRepository: mailingListRepo,
 	}
 
 	srv.router.Use(middleware.Logger)

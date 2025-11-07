@@ -39,7 +39,7 @@ func (s *Server) createMailingList(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	mailingList, err := handlers.HandleCreate(newMailingList)
+	mailingList, err := handlers.HandleCreate(newMailingList, s.mailingListRepository)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		errorResponse := map[string]map[string]string{

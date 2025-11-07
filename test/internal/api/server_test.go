@@ -5,14 +5,24 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"backend-go/internal/api"
+	"backend-go/internal/repositories"
 )
 
 func TestNewApiServer(t *testing.T) {
-	srv := api.NewApiServer()
+	repo, err := repositories.NewSqliteMailingListRepository(":memory:")
+	if err != nil {
+		t.Fatalf("Failed to create test repository: %v", err)
+	}
+	defer func() {
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
+		}
+	}()
+
+	srv := api.NewApiServer(repo)
 
 	if srv == nil {
 		t.Fatal("NewApiServer() returned nil")
@@ -20,7 +30,17 @@ func TestNewApiServer(t *testing.T) {
 }
 
 func TestServerRouting(t *testing.T) {
-	srv := api.NewApiServer()
+	repo, err := repositories.NewSqliteMailingListRepository(":memory:")
+	if err != nil {
+		t.Fatalf("Failed to create test repository: %v", err)
+	}
+	defer func() {
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
+		}
+	}()
+
+	srv := api.NewApiServer(repo)
 
 	tests := []struct {
 		name           string
@@ -63,7 +83,17 @@ func TestServerRouting(t *testing.T) {
 }
 
 func TestServerCORS(t *testing.T) {
-	srv := api.NewApiServer()
+	repo, err := repositories.NewSqliteMailingListRepository(":memory:")
+	if err != nil {
+		t.Fatalf("Failed to create test repository: %v", err)
+	}
+	defer func() {
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
+		}
+	}()
+
+	srv := api.NewApiServer(repo)
 
 	tests := []struct {
 		name        string
@@ -104,11 +134,17 @@ func TestServerCORS(t *testing.T) {
 }
 
 func TestServerMailingListEndpoint(t *testing.T) {
-	// Create a temporary CSV file for testing
-	tmpFile := "test_mailing_list.csv"
-	defer func() { _ = os.Remove(tmpFile) }()
+	repo, err := repositories.NewSqliteMailingListRepository(":memory:")
+	if err != nil {
+		t.Fatalf("Failed to create test repository: %v", err)
+	}
+	defer func() {
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
+		}
+	}()
 
-	srv := api.NewApiServer()
+	srv := api.NewApiServer(repo)
 
 	t.Run("Valid request creates mailing list entry", func(t *testing.T) {
 		payload := map[string]string{

@@ -2,13 +2,24 @@ package main_test
 
 import (
 	"backend-go/internal/api"
+	"backend-go/internal/repositories"
 	"net/http"
 	"testing"
 	"time"
 )
 
 func TestMainServerIntegration(t *testing.T) {
-	srv := api.NewApiServer()
+	repo, err := repositories.NewSqliteMailingListRepository(":memory:")
+	if err != nil {
+		t.Fatalf("Failed to create test repository: %v", err)
+	}
+	defer func() {
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
+		}
+	}()
+
+	srv := api.NewApiServer(repo)
 	if srv == nil {
 		t.Fatal("NewApiServer() returned nil")
 	}

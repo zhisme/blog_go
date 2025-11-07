@@ -7,4 +7,4 @@ require (
 	github.com/go-chi/cors v1.2.1
 )
 
-require github.com/mattn/go-sqlite3 v1.14.32 // indirect
+require github.com/mattn/go-sqlite3 v1.14.32

@@ -40,6 +40,13 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no api zh@165.22.80.158:/var/www/blog_backend/
 
+      - name: Copy source files to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'mkdir -p /var/www/blog_backend/src'
+          scp -o StrictHostKeyChecking=no -r go.mod go.sum cmd/ internal/ zh@165.22.80.158:/var/www/blog_backend/src/
+          if [ -d "pkg" ]; then scp -o StrictHostKeyChecking=no -r pkg/ zh@165.22.80.158:/var/www/blog_backend/src/; fi
+          if [ -d "migrations" ]; then scp -o StrictHostKeyChecking=no -r migrations/ zh@165.22.80.158:/var/www/blog_backend/src/; fi
+
       - name: Restart the Go app service
         run: |
           ssh -o StrictHostKeyChecking=no zh@165.22.80.158 'sudo /bin/systemctl start blog_backend.service'

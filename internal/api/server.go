@@ -12,7 +12,7 @@ import (
 )
 
 type Server struct {
-	router               *chi.Mux
+	router                *chi.Mux
 	mailingListRepository interfaces.MailingListRepository
 }
 
@@ -40,7 +40,7 @@ func (s *Server) ListenAndServe(addr string) error {
 
 func NewApiServer(mailingListRepo interfaces.MailingListRepository) *Server {
 	srv := &Server{
-		router:               chi.NewRouter(),
+		router:                chi.NewRouter(),
 		mailingListRepository: mailingListRepo,
 	}
 

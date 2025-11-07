@@ -14,6 +14,11 @@ type Server struct {
 	router *chi.Mux
 }
 
+// ServeHTTP implements http.Handler interface
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.router.ServeHTTP(w, r)
+}
+
 func (s *Server) ListenAndServe(addr string) error {
 	log.Default().Printf("api server started on %s\n", addr)
 

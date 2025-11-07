@@ -17,7 +17,7 @@ func (m *MailingListValidator) Validate(mailingList *dto.MailingList) error {
 		return err
 	}
 
-	if err := m.validateUsername(mailingList.Email); err != nil {
+	if err := m.validateUsername(mailingList.Username); err != nil {
 		return err
 	}
 

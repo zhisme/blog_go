@@ -47,3 +47,8 @@ Desktop.ini
 
 mailing_list.csv
 /api
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal

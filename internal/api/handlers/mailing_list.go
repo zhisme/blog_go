@@ -2,12 +2,12 @@ package handlers
 
 import (
 	"backend-go/internal/dto"
-	"backend-go/internal/repositories"
+	"backend-go/internal/interfaces"
 	"backend-go/internal/validators"
 	"time"
 )
 
-func HandleCreate(newMailingList dto.MailingList) (dto.MailingList, error) {
+func HandleCreate(newMailingList dto.MailingList, repo interfaces.MailingListRepository) (dto.MailingList, error) {
 	validator := validators.NewMailingListValidator()
 	if err := validator.Validate(&newMailingList); err != nil {
 		return newMailingList, err
@@ -18,8 +18,6 @@ func HandleCreate(newMailingList dto.MailingList) (dto.MailingList, error) {
 		Email:     newMailingList.Email,
 		CreatedAt: time.Now(),
 	}
-
-	repo := repositories.NewCsvMailingListRepository("mailing_list.csv")
 
 	if err := repo.Save(mailingList); err != nil {
 		return newMailingList, err

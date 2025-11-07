@@ -6,18 +6,21 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
 	"backend-go/internal/api"
+	"backend-go/internal/repositories"
 )
 
 func TestCreateMailingList(t *testing.T) {
-	testCSVFile := "test_create_mailing_list.csv"
-	defer func() { _ = os.Remove(testCSVFile) }()
+	repo, err := repositories.NewSqliteMailingListRepository(":memory:")
+	if err != nil {
+		t.Fatalf("Failed to create test repository: %v", err)
+	}
+	defer repo.Close()
 
-	srv := api.NewApiServer()
+	srv := api.NewApiServer(repo)
 
 	t.Run("Valid request returns 201 Created", func(t *testing.T) {
 		payload := map[string]string{

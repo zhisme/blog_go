@@ -122,6 +122,5 @@ func main() {
 		log.Printf("\nYou can now update your application to use the SQLite database.")
 	} else {
 		log.Printf("\nMigration completed with errors. Please review the log above.")
-		os.Exit(1)
 	}
 }

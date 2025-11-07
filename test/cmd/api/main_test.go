@@ -14,8 +14,8 @@ func TestMainServerIntegration(t *testing.T) {
 		t.Fatalf("Failed to create test repository: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			t.Errorf("Failed to close repository: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
 		}
 	}()
 

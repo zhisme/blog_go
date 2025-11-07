@@ -14,8 +14,8 @@ func TestNewSqliteMailingListRepository(t *testing.T) {
 		t.Fatalf("Failed to create repository: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			t.Errorf("Failed to close repository: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
 		}
 	}()
 
@@ -30,8 +30,8 @@ func TestSqliteSave(t *testing.T) {
 		t.Fatalf("Failed to create repository: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			t.Errorf("Failed to close repository: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
 		}
 	}()
 
@@ -119,8 +119,8 @@ func TestSqliteWithFileDatabase(t *testing.T) {
 			t.Fatalf("Failed to create repository: %v", err)
 		}
 		defer func() {
-			if err := repo.Close(); err != nil {
-				t.Errorf("Failed to close repository: %v", err)
+			if closeErr := repo.Close(); closeErr != nil {
+				t.Errorf("Failed to close repository: %v", closeErr)
 			}
 		}()
 
@@ -146,8 +146,8 @@ func TestSqliteWithFileDatabase(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to save entry: %v", err)
 		}
-		if err := repo1.Close(); err != nil {
-			t.Errorf("Failed to close repo1: %v", err)
+		if closeErr := repo1.Close(); closeErr != nil {
+			t.Errorf("Failed to close repo1: %v", closeErr)
 		}
 
 		// Now open the existing database
@@ -156,8 +156,8 @@ func TestSqliteWithFileDatabase(t *testing.T) {
 			t.Fatalf("Failed to open existing repository: %v", err)
 		}
 		defer func() {
-			if err := repo2.Close(); err != nil {
-				t.Errorf("Failed to close repo2: %v", err)
+			if closeErr := repo2.Close(); closeErr != nil {
+				t.Errorf("Failed to close repo2: %v", closeErr)
 			}
 		}()
 

@@ -17,8 +17,8 @@ func TestNewApiServer(t *testing.T) {
 		t.Fatalf("Failed to create test repository: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			t.Errorf("Failed to close repository: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
 		}
 	}()
 
@@ -35,8 +35,8 @@ func TestServerRouting(t *testing.T) {
 		t.Fatalf("Failed to create test repository: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			t.Errorf("Failed to close repository: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
 		}
 	}()
 
@@ -88,8 +88,8 @@ func TestServerCORS(t *testing.T) {
 		t.Fatalf("Failed to create test repository: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			t.Errorf("Failed to close repository: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
 		}
 	}()
 
@@ -139,8 +139,8 @@ func TestServerMailingListEndpoint(t *testing.T) {
 		t.Fatalf("Failed to create test repository: %v", err)
 	}
 	defer func() {
-		if err := repo.Close(); err != nil {
-			t.Errorf("Failed to close repository: %v", err)
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
 		}
 	}()
 

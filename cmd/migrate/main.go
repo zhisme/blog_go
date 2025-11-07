@@ -27,7 +27,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to open CSV file: %v", err)
 	}
-	defer csvFile.Close()
+	defer func() {
+		if err := csvFile.Close(); err != nil {
+			log.Printf("Error closing CSV file: %v", err)
+		}
+	}()
 
 	// Read CSV data
 	reader := csv.NewReader(csvFile)
@@ -46,7 +50,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize SQLite repository: %v", err)
 	}
-	defer repo.Close()
+	defer func() {
+		if err := repo.Close(); err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}()
 
 	// Track statistics
 	imported := 0

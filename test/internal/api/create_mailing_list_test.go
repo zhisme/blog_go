@@ -18,7 +18,11 @@ func TestCreateMailingList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create test repository: %v", err)
 	}
-	defer repo.Close()
+	defer func() {
+		if err := repo.Close(); err != nil {
+			t.Errorf("Failed to close repository: %v", err)
+		}
+	}()
 
 	srv := api.NewApiServer(repo)
 

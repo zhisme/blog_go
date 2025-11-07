@@ -13,7 +13,11 @@ func TestNewSqliteMailingListRepository(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create repository: %v", err)
 	}
-	defer repo.Close()
+	defer func() {
+		if err := repo.Close(); err != nil {
+			t.Errorf("Failed to close repository: %v", err)
+		}
+	}()
 
 	if repo == nil {
 		t.Fatal("NewSqliteMailingListRepository() returned nil")
@@ -25,7 +29,11 @@ func TestSqliteSave(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create repository: %v", err)
 	}
-	defer repo.Close()
+	defer func() {
+		if err := repo.Close(); err != nil {
+			t.Errorf("Failed to close repository: %v", err)
+		}
+	}()
 
 	t.Run("Save creates entry successfully", func(t *testing.T) {
 		ml := &dto.MailingList{
@@ -110,7 +118,11 @@ func TestSqliteWithFileDatabase(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to create repository: %v", err)
 		}
-		defer repo.Close()
+		defer func() {
+			if err := repo.Close(); err != nil {
+				t.Errorf("Failed to close repository: %v", err)
+			}
+		}()
 
 		if _, statErr := os.Stat(testFile); os.IsNotExist(statErr) {
 			t.Error("Expected database file to be created, but it doesn't exist")
@@ -134,14 +146,20 @@ func TestSqliteWithFileDatabase(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to save entry: %v", err)
 		}
-		repo1.Close()
+		if err := repo1.Close(); err != nil {
+			t.Errorf("Failed to close repo1: %v", err)
+		}
 
 		// Now open the existing database
 		repo2, err := repositories.NewSqliteMailingListRepository(testFile)
 		if err != nil {
 			t.Fatalf("Failed to open existing repository: %v", err)
 		}
-		defer repo2.Close()
+		defer func() {
+			if err := repo2.Close(); err != nil {
+				t.Errorf("Failed to close repo2: %v", err)
+			}
+		}()
 
 		// Try to save the same email - should be handled gracefully
 		err = repo2.Save(ml)

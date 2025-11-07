@@ -15,8 +15,6 @@ func TestNewCsvMailingListRepository(t *testing.T) {
 	if repo == nil {
 		t.Fatal("NewCsvMailingListRepository() returned nil")
 	}
-
-	// Note: Cannot test unexported fields in black-box testing
 }
 
 func TestSave(t *testing.T) {
@@ -26,7 +24,7 @@ func TestSave(t *testing.T) {
 	repo := repositories.NewCsvMailingListRepository(testFile)
 
 	t.Run("Save creates file with headers if it doesn't exist", func(t *testing.T) {
-		_ = os.Remove(testFile) // Ensure clean state
+		_ = os.Remove(testFile)
 
 		ml := &dto.MailingList{
 			Username:  "testuser",
@@ -39,12 +37,10 @@ func TestSave(t *testing.T) {
 			t.Fatalf("Expected no error, got %v", err)
 		}
 
-		// Verify file exists
 		if _, statErr := os.Stat(testFile); os.IsNotExist(statErr) {
 			t.Error("Expected file to be created, but it doesn't exist")
 		}
 
-		// Verify file contents
 		file, err := os.Open(testFile)
 		if err != nil {
 			t.Fatalf("Failed to open test file: %v", err)
@@ -65,7 +61,6 @@ func TestSave(t *testing.T) {
 			t.Fatalf("Expected 2 records (header + data), got %d", len(records))
 		}
 
-		// Check headers
 		expectedHeaders := []string{"Username", "Email", "CreatedAt"}
 		for i, header := range records[0] {
 			if header != expectedHeaders[i] {
@@ -73,7 +68,6 @@ func TestSave(t *testing.T) {
 			}
 		}
 
-		// Check data
 		if records[1][0] != ml.Username {
 			t.Errorf("Expected username %s, got %s", ml.Username, records[1][0])
 		}

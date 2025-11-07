@@ -96,7 +96,6 @@ func TestHandleCreate(t *testing.T) {
 			Email:    "duplicate@example.com",
 		}
 
-		// Create first entry
 		_, err := handlers.HandleCreate(input)
 		if err != nil {
 			t.Fatalf("Expected no error on first create, got %v", err)
@@ -109,7 +108,6 @@ func TestHandleCreate(t *testing.T) {
 		}
 
 		result, err := handlers.HandleCreate(input2)
-		// The repository logs but doesn't return an error for duplicates
 		if err != nil {
 			t.Fatalf("Expected no error on duplicate (should be handled gracefully), got %v", err)
 		}

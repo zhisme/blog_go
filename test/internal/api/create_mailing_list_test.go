@@ -14,7 +14,6 @@ import (
 )
 
 func TestCreateMailingList(t *testing.T) {
-	// Use a test CSV file
 	testCSVFile := "test_create_mailing_list.csv"
 	defer func() { _ = os.Remove(testCSVFile) }()
 

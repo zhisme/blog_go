@@ -17,8 +17,6 @@ func TestNewApiServer(t *testing.T) {
 	if srv == nil {
 		t.Fatal("NewApiServer() returned nil")
 	}
-
-	// Note: Cannot test unexported fields in black-box testing
 }
 
 func TestServerRouting(t *testing.T) {

@@ -67,9 +67,6 @@ func TestValidate(t *testing.T) {
 	})
 }
 
-// Note: TestValidateEmail and TestValidateUsername removed - they tested unexported methods
-// Email and username validation is now tested through the public Validate() API in TestValidate
-
 func TestValidatorEdgeCases(t *testing.T) {
 	validator := validators.NewMailingListValidator()
 
@@ -83,7 +80,6 @@ func TestValidatorEdgeCases(t *testing.T) {
 		if err == nil {
 			t.Error("Expected error for both empty, got nil")
 		}
-		// Should fail on email validation first
 		if !strings.Contains(err.Error(), "email is required") {
 			t.Errorf("Expected 'email is required' error, got %v", err)
 		}

@@ -24,7 +24,7 @@ func main() {
 
 	// Create and start server
 	srv := api.NewApiServer(repo)
-	err = srv.ListenAndServe("localhost:3000")
+	err = srv.ListenAndServe(cfg.ServerAddr)
 	if err != nil {
 		log.Printf("Server error: %v", err)
 	}

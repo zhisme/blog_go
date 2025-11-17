@@ -2,6 +2,7 @@ package api
 
 import (
 	"backend-go/internal/interfaces"
+	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -19,6 +20,15 @@ type Server struct {
 // ServeHTTP implements http.Handler interface
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
+}
+
+// healthCheck handles the /health endpoint for readiness and liveness probes
+func (s *Server) healthCheck(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"status": "healthy",
+	})
 }
 
 func (s *Server) ListenAndServe(addr string) error {
@@ -47,10 +57,11 @@ func NewApiServer(mailingListRepo interfaces.MailingListRepository) *Server {
 	srv.router.Use(middleware.Logger)
 	srv.router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:1313", "https://zhisme.com/"},
-		AllowedMethods:   []string{"POST", "DELETE"},
+		AllowedMethods:   []string{"GET", "POST", "DELETE"},
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+	srv.router.Get("/health", srv.healthCheck)
 	srv.router.Post("/mailing_list", srv.createMailingList)
 
 	log.Default().Println("api server initialized")

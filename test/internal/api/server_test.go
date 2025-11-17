@@ -49,6 +49,12 @@ func TestServerRouting(t *testing.T) {
 		expectedStatus int
 	}{
 		{
+			name:           "GET to /health should return OK",
+			method:         http.MethodGet,
+			path:           "/health",
+			expectedStatus: http.StatusOK,
+		},
+		{
 			name:           "POST to /mailing_list should be handled",
 			method:         http.MethodPost,
 			path:           "/mailing_list",
@@ -79,6 +85,43 @@ func TestServerRouting(t *testing.T) {
 				t.Errorf("Expected status %d, got %d", tt.expectedStatus, w.Code)
 			}
 		})
+	}
+}
+
+func TestHealthEndpoint(t *testing.T) {
+	repo, err := repositories.NewSqliteMailingListRepository(":memory:")
+	if err != nil {
+		t.Fatalf("Failed to create test repository: %v", err)
+	}
+	defer func() {
+		if closeErr := repo.Close(); closeErr != nil {
+			t.Errorf("Failed to close repository: %v", closeErr)
+		}
+	}()
+
+	srv := api.NewApiServer(repo)
+
+	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	w := httptest.NewRecorder()
+
+	srv.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status %d, got %d", http.StatusOK, w.Code)
+	}
+
+	contentType := w.Header().Get("Content-Type")
+	if contentType != "application/json" {
+		t.Errorf("Expected Content-Type 'application/json', got '%s'", contentType)
+	}
+
+	var response map[string]string
+	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
+		t.Fatalf("Failed to parse response: %v", err)
+	}
+
+	if response["status"] != "healthy" {
+		t.Errorf("Expected status 'healthy', got '%s'", response["status"])
 	}
 }
 

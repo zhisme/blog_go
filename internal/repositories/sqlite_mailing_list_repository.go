@@ -20,11 +20,6 @@ func NewSqliteMailingListRepository(dbPath string) (*SqliteMailingListRepository
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
 
-	// Enable WAL mode for better concurrent access
-	if _, err := db.Exec("PRAGMA journal_mode=WAL"); err != nil {
-		return nil, fmt.Errorf("failed to enable WAL mode: %w", err)
-	}
-
 	// Enable foreign keys
 	if _, err := db.Exec("PRAGMA foreign_keys=ON"); err != nil {
 		return nil, fmt.Errorf("failed to enable foreign keys: %w", err)
